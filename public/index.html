@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Explorer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">🎬 Movie Explorer</h1>
+
+    <input id="searchInput" type="text" placeholder="Enter movie title..." class="w-full px-4 py-2 rounded text-black mb-4" />
+    <button onclick="searchMovies()" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Search</button>
+
+    <div id="results" class="mt-6 space-y-4"></div>
+
+    <div id="details" class="mt-10 p-4 bg-gray-800 rounded hidden">
+      <h2 class="text-xl font-semibold mb-2" id="movieTitle"></h2>
+      <p id="tagline" class="italic text-gray-400 mb-2"></p>
+      <p><strong>Release Date:</strong> <span id="releaseDate"></span></p>
+      <p><strong>IMDB ID:</strong> <span id="imdbId"></span></p>
+      <p><strong>Popularity:</strong> <span id="popularity"></span></p>
+
+      <h3 class="mt-4 font-bold">Cast:</h3>
+      <ul id="castList" class="list-disc list-inside"></ul>
+
+      <h3 class="mt-4 font-bold">Crew (Directors):</h3>
+      <ul id="crewList" class="list-disc list-inside"></ul>
+    </div>
+  </div>
+
+  <script>
+    async function searchMovies() {
+      const query = document.getElementById('searchInput').value;
+      const res = await fetch(`/api/search-movie?title=${encodeURIComponent(query)}`);
+      const movies = await res.json();
+
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+
+      movies.forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-800 rounded cursor-pointer hover:bg-gray-700';
+        div.innerHTML = `
+          <h2 class="text-lg font-bold">${movie.title}</h2>
+          <p class="text-sm text-gray-400">${movie.release_date}</p>
+        `;
+        div.onclick = () => getMovieDetails(movie.id);
+        resultsDiv.appendChild(div);
+      });
+    }
+
+    async function getMovieDetails(id) {
+      const res = await fetch(`/api/movie-details/${id}`);
+      const movie = await res.json();
+
+      document.getElementById('movieTitle').textContent = movie.title;
+      document.getElementById('tagline').textContent = movie.tagline;
+      document.getElementById('releaseDate').textContent = movie.release_date;
+      document.getElementById('imdbId').textContent = movie.imdb_id;
+      document.getElementById('popularity').textContent = movie.popularity;
+
+      const castList = document.getElementById('castList');
+      castList.innerHTML = '';
+      movie.cast.slice(0, 5).forEach(person => {
+        const li = document.createElement('li');
+        li.textContent = `${person.name} as ${person.character}`;
+        castList.appendChild(li);
+      });
+
+      const crewList = document.getElementById('crewList');
+      crewList.innerHTML = '';
+      movie.crew
+        .filter(member => member.job === 'Director')
+        .forEach(director => {
+          const li = document.createElement('li');
+          li.textContent = director.name;
+          crewList.appendChild(li);
+        });
+
+      document.getElementById('details').classList.remove('hidden');
+      document.getElementById('details').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
