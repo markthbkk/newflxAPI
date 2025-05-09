@@ -2,13 +2,12 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
-const PORT =  process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const TMDB_TOKEN =
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZmMwNTMyNmQwNWRkMGNhYTE4ZjAzMTRiNWJhZWZjOSIsIm5iZiI6MTcwMzA2NTA1MS4wNzUsInN1YiI6IjY1ODJiNWRiZTgxMzFkNDE0N2E0YWJhNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.s-5yc6_ze6KO1V6uNeFzI8EFNTCGAryr4V4acKeQFfQ";
 
-app.use(express.static('public')); // or wherever this file lives
-
+app.use(express.static("public")); // or wherever this file lives
 
 // Route 1: Search movies by title
 app.get("/api/search-movie", async (req, res) => {
@@ -80,28 +79,28 @@ app.get("/api/movie-details/:id", async (req, res) => {
 });
 
 // Get actor or director with their movies
-app.get('/api/person/:id', async (req, res) => {
+app.get("/api/person/:id", async (req, res) => {
   const { id } = req.params;
 
-  
   const url = `https://api.themoviedb.org/3/person/${id}?append_to_response=movie_credits`;
 
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${TMDB_TOKEN}`,
-      accept: 'application/json',
+      accept: "application/json",
     },
   });
 
   const data = await response.json();
 
-  
-
-  const isDirector = data.movie_credits?.crew?.some(job => job.job === "Director");
-  const known_for = (isDirector
-    ? data.movie_credits.crew.filter(job => job.job === "Director")
-    : data.movie_credits.cast
-  ).map(movie => ({
+  const isDirector = data.movie_credits?.crew?.some(
+    (job) => job.job === "Director"
+  );
+  const known_for = (
+    isDirector
+      ? data.movie_credits.crew.filter((job) => job.job === "Director")
+      : data.movie_credits.cast
+  ).map((movie) => ({
     id: movie.id,
     title: movie.title,
     poster_path: movie.poster_path,
@@ -114,15 +113,15 @@ app.get('/api/person/:id', async (req, res) => {
     name: data.name,
     profile_path: data.profile_path,
     known_for,
-    job: isDirector ? "Director" : "Actor"
+    job: isDirector ? "Director" : "Actor",
   });
 });
 
 app.get("/api/health", (req, res) => {
-     res.send("OK");
-  });
+  res.send("OK");
+});
 
-
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`PORT env: ${process.env.PORT}, Using: ${PORT}`);
 });
