@@ -5,13 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 
-app.use(
-  cors({
-    origin: "https://newflix.lkmi-tech.com",
-    methods: ["GET"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 const TMDB_TOKEN =
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZmMwNTMyNmQwNWRkMGNhYTE4ZjAzMTRiNWJhZWZjOSIsIm5iZiI6MTcwMzA2NTA1MS4wNzUsInN1YiI6IjY1ODJiNWRiZTgxMzFkNDE0N2E0YWJhNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.s-5yc6_ze6KO1V6uNeFzI8EFNTCGAryr4V4acKeQFfQ";
