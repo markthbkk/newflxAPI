@@ -118,6 +118,10 @@ app.get('/api/person/:id', async (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+     res.send("OK");
+  });
+
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
