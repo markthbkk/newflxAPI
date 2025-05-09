@@ -2,7 +2,7 @@
 const express = require("express");
 
 const app = express();
-const PORT = 3000;
+const PORT = 3100;
 
 const TMDB_TOKEN =
   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZmMwNTMyNmQwNWRkMGNhYTE4ZjAzMTRiNWJhZWZjOSIsIm5iZiI6MTcwMzA2NTA1MS4wNzUsInN1YiI6IjY1ODJiNWRiZTgxMzFkNDE0N2E0YWJhNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.s-5yc6_ze6KO1V6uNeFzI8EFNTCGAryr4V4acKeQFfQ";
